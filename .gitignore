@@ -1,0 +1,9 @@
+node_modules
+config
+yarn.lock 
+package-lock.json
+*.DS_Store
+.vscode
+notes.txt
+/public
+dev-data
