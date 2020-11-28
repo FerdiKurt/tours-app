@@ -7,11 +7,11 @@ const userRouter = require('./routers/userRoutes');
 const app = express();
 
 // 1) MIDDLEWARES
-app.use(express.json());
+app.use(express.json()); // make body available on req
 app.use(express.static(`${__dirname}/../public`));
 app.use(morgan('dev'));
 
-// 3) ROUTES
+// 2) ROUTES
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
