@@ -5,6 +5,13 @@ const router = express.Router()
 
 // router.param('id', ...someFunction)
 
+router.route('/tour-stats').get(tourController.getTourStats)
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan)
+
+router
+    .route('/top-5-cheap')
+    .get(tourController.getFiveCheap, tourController.getAllTours)
+
 router
     .route('/')
     .get(tourController.getAllTours)
