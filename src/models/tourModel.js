@@ -70,10 +70,36 @@ tourSchema.virtual('durationInWeeks').get(function() {
 })
 
 // document middlewares: runs before save(), create()
-tourSchema.pre('save', function() {
-    const tour = this
+tourSchema.pre('save', function(next) {
+    const tourDocument = this
 
-    tour.slug = slugify(tour.name, { lower: true })
+    tourDocument.slug = slugify(tourDocument.name, { lower: true })
+    next()
+})
+
+// query middleware: find()
+tourSchema.pre(/^find/, function(next) {
+    const tourQuery = this
+    tourQuery.find({ secretTour: { $ne: true } })
+
+    // tour.start = Date.now()
+    next()
+})
+
+// tourSchema.post(/^find/, function(docs, next) {
+//     const tour = this
+//     console.log(`${Date.now() - tour.start}`)
+//     console.log(docs)
+//     next()
+// })
+
+// aggregation middleware
+tourSchema.pre('aggregate', function(next) {
+    const aggregateObject = this
+    aggregateObject
+        .pipeline()
+        .unshift({ $match: { secretTour: { $ne: true } } })
+    // console.log(aggregateObject.pipeline())
     next()
 })
 
