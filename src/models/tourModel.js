@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const slugify = require('slugify')
+const validator = require('validator') // validation and sanitization just only on strings
 
 const tourSchema = new mongoose.Schema(
     {
@@ -8,6 +9,9 @@ const tourSchema = new mongoose.Schema(
             required: [true, 'Name is required'],
             unique: true,
             trim: true,
+            maxlength: [40, 'Max name length is 40 characters'],
+            minlength: [8, 'Min name length is 8 characters'],
+            // validate: [validator.isAlpha, 'String contains invalid characters'],
         },
         duration: {
             type: Number,
@@ -20,10 +24,17 @@ const tourSchema = new mongoose.Schema(
         difficulty: {
             type: String,
             required: [true, 'Difficulty is required'],
+            enum: {
+                values: ['easy', 'medium', 'difficult'],
+                message:
+                    'Difficulty must be one of "easy", "medium", "difficult"',
+            },
         },
         ratingsAverage: {
             type: Number,
             default: 4,
+            min: [1, 'Ratings must be greater than 1'],
+            max: [5, 'Ratings must be smaller than 5'],
         },
         ratingsQuantity: {
             type: Number,
@@ -33,7 +44,17 @@ const tourSchema = new mongoose.Schema(
             type: Number,
             required: [true, 'Price is required'],
         },
-        priceDiscount: Number,
+        priceDiscount: {
+            type: Number,
+            validate: {
+                validator: function(val) {
+                    // this points to only current document on NEW document creation
+                    return val < this.price
+                },
+                message:
+                    'Discount price ({VALUE}) should be smaller than price',
+            },
+        },
         summary: {
             type: String,
             trim: true,
@@ -55,6 +76,10 @@ const tourSchema = new mongoose.Schema(
         },
         startDates: [Date],
         slug: String,
+        secretTour: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         toJSON: { virtuals: true },
