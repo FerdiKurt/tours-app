@@ -11,6 +11,7 @@ mongoose
         useFindAndModify: false,
         useUnifiedTopology: true,
     })
-    .then(con => {
+    .then(() => {
         console.log(`Succesfully connected to MongoDB!`)
     })
+    .catch(err => console.log(`Error occured: ${err}`))
