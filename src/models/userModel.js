@@ -40,12 +40,18 @@ const userSchema = new mongoose.Schema({
             message: 'Password are not the same!',
         },
     },
-    // todo: security issues, check passwordChangedAt field
+    // TODO: security issues, check passwordChangedAt field
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpiresAt: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false,
+    }
 })
 
+// document middleware
 userSchema.pre('save', async function (next) {
     // only run if password is modified
     const user = this
@@ -60,10 +66,18 @@ userSchema.pre('save', async function (next) {
 userSchema.pre('save', function (next) {
     const user = this
     if (!user.isModified('password') || user.isNew) return next();
-    // todo: check this part again
+    // TODO: check this part again
     user.passwordChangedAt = Date.now() - 3000;
     next();
 });
+
+// query middleware
+userSchema.pre(/^find/, function (next) {
+    const user = this
+    // this points current query
+    user.find({ active: { $ne: false } })
+    next()
+})
 
 userSchema.methods.correctPassword = async function(givenPassword, userPassword) {
     return await bcrypt.compare(givenPassword, userPassword)
