@@ -61,7 +61,7 @@ module.exports = (err, req, res, next) => {
       
         let error = Object.create(err)
         
-        // todo: validation error got problems in production mode
+        // TODO: validation error got problems in production mode
         // if (error.name = 'ValidationError') {
         //     error = handleValidationError(error)
         // }
