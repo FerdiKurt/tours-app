@@ -150,7 +150,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         500
       );
     }
-  });
+});
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
     // get user based on token
