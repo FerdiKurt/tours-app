@@ -1,6 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
+const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
+const mongoSanitize = require('express-mongo-sanitize')
+const xss = require('xss-clean')
+const hpp = require('hpp')
 require('./db/mongoose')
 
 const APPError = require('./utils/APPError')
@@ -11,7 +15,26 @@ const userRouter = require('./routers/userRoutes')
 const app = express()
 
 // 1) GLOBAL MIDDLEWARES
-app.use(express.json()) // make body available on req
+// set security HTTP headers
+app.use(helmet())
+
+// data sanitization against NOSQL query injection
+app.use(mongoSanitize())
+
+// data sanitization agains XSS
+app.use(xss())
+
+// prevent parameter solution
+app.use(hpp({
+    whitelist: [
+        'duration',
+        'ratingsAverage',
+        'ratingsQuantity',
+        'maxGroupSize',
+        'difficulty',
+        'price',
+    ]
+}))
 
 if (process.env.NODE_ENV === 'development') {
     app.use(express.static(`${__dirname}/../public`))
