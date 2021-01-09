@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
+
 require('./db/mongoose')
 
 const APPError = require('./utils/APPError')
@@ -17,6 +18,12 @@ const app = express()
 // 1) GLOBAL MIDDLEWARES
 // set security HTTP headers
 app.use(helmet())
+
+// body parser, reading data from body into req.body
+// make body available on req
+app.use(express.json(
+    { limit: '10kb' }
+)) 
 
 // data sanitization against NOSQL query injection
 app.use(mongoSanitize())
@@ -36,11 +43,13 @@ app.use(hpp({
     ]
 }))
 
+// development logging and static asset for testing purposes
 if (process.env.NODE_ENV === 'development') {
     app.use(express.static(`${__dirname}/../public`))
     app.use(morgan('dev'))
 }
 
+// limiting the number of request from same API
 const limiter = rateLimit({
     max: 100,
     windowMs: 60 * 60 * 1000,
