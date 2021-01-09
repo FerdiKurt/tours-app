@@ -1,7 +1,7 @@
 {
-  "name": "natours",
+  "name": "tours",
   "version": "1.0.0",
-  "description": "Learning node, express and mongoDB",
+  "description": "node, express and mongoDB",
   "main": "app.js",
   "scripts": {
     "start": "node src/index.js",
