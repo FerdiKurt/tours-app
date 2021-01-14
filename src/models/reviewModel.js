@@ -32,6 +32,16 @@ const reviewSchema = new mongoose.Schema({
     }
 )
 
+// query middleware: find()
+reviewSchema.pre(/^find/, function (next) {
+    const reviewsQuery = this
+    reviewsQuery.populate({ 
+        path: 'user',
+        select: 'name photo'
+    })
+
+    next()
+})
 
 const Review = mongoose.model('Review', reviewSchema)
 
