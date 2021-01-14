@@ -103,6 +103,12 @@ const tourSchema = new mongoose.Schema(
                 description: String,
                 day: Number
             }
+        ],
+        guides: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User'
+            }
         ]
     },
     {
@@ -141,10 +147,14 @@ tourSchema.pre(/^find/, function(next) {
     // tour.start = Date.now()
     next()
 })
-    const tourQuery = this
-    tourQuery.find({ secretTour: { $ne: true } })
 
-    // tour.start = Date.now()
+tourSchema.pre(/^find/, function (next) {
+    const tourQuery = this
+    tourQuery.populate({
+        path: 'guides',
+        select: '-__v'
+    })
+
     next()
 })
 
