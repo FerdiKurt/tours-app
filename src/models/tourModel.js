@@ -135,6 +135,12 @@ tourSchema.pre('save', function(next) {
 
 // query middleware: find()
 tourSchema.pre(/^find/, function(next) {
+    const toursQuery = this
+    toursQuery.find({ secretTour: { $ne: true } })
+
+    // tour.start = Date.now()
+    next()
+})
     const tourQuery = this
     tourQuery.find({ secretTour: { $ne: true } })
 
