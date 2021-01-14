@@ -12,6 +12,7 @@ const APPError = require('./utils/APPError')
 const globalErrorController = require('./controllers/errorController')
 const tourRouter = require('./routers/tourRoutes')
 const userRouter = require('./routers/userRoutes')
+const reviewRouter = require('./routers/reviewRoutes')
 
 const app = express()
 
@@ -61,6 +62,7 @@ app.use('/api', limiter)
 // 2) ROUTES
 app.use('/api/v1/tours', tourRouter)
 app.use('/api/v1/users', userRouter)
+app.use('/api/v1/reviews', reviewRouter)
 
 // undefined route handler
 app.all('*', (req, res, next) => {
