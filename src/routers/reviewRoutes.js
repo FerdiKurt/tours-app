@@ -6,15 +6,26 @@ const router = express.Router({
     mergeParams: true
 })
 
-// POST /tour/:tourId/reviews
-// POST /reviews
+// protect all routes after this middleware
+router.use(authController.protect)
 
 router.route('/')
     .get(reviewController.getAllReviews)
     .post(
-        authController.protect,
         authController.restrictTo('user'),
+        reviewController.setIds,
         reviewController.createReview
+    )
+
+router.route('/:id')
+    .get(reviewController.getReview)
+    .patch(
+        authController.restrictTo('user', 'admin'),
+        reviewController.updateReview
+    )
+    .delete(
+        authController.restrictTo('user', 'admin'),
+        reviewController.deleteReview
     )
 
 module.exports = router
