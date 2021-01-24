@@ -79,6 +79,7 @@ userSchema.pre(/^find/, function (next) {
     next()
 })
 
+// instance methods for all of user instances
 userSchema.methods.correctPassword = async function(givenPassword, userPassword) {
     return await bcrypt.compare(givenPassword, userPassword)
 }
