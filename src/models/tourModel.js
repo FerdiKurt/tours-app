@@ -117,6 +117,10 @@ const tourSchema = new mongoose.Schema(
     }
 )
 
+// indexes
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 })
+
 // virtuals can not be used with query methods since they are virtual
 tourSchema.virtual('durationInWeeks').get(function() {
     const tour = this
@@ -157,13 +161,6 @@ tourSchema.pre(/^find/, function (next) {
 
     next()
 })
-
-// tourSchema.post(/^find/, function(docs, next) {
-//     const tour = this
-//     console.log(`${Date.now() - tour.start}`)
-//     console.log(docs)
-//     next()
-// })
 
 // aggregation middleware
 tourSchema.pre('aggregate', function(next) {
