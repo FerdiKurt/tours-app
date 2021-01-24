@@ -34,30 +34,6 @@ exports.getOne = (Model, populateOptions) => catchAsync(async (req, res, next) =
     })
 })
 
-exports.getAll = Model => catchAsync(async (req, res, next) => {
-    // to allow for nested GET reviews on Tour
-    let filter = {}
-    if (req.params.tourId) filter = { tour: req.params.tourId }
-
-      // execute query
-      const features = new APIFeatures(Model.find(filter), req.query)
-      .filter()
-      .sort()
-      .limit()
-      .paginate()
-
-  const docs = await features.query
-
-  // send response
-  res.status(200).json({
-      status: 'success',
-      results: docs.length,
-      data: {
-          data: docs,
-      },
-  })
-})
-
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {
     const _id = req.params.id
 
@@ -88,6 +64,31 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
         status: 'success',
         data: {
             data: doc,
+        },
+    })
+})
+
+exports.getAll = Model => catchAsync(async (req, res, next) => {
+    // to allow for nested GET reviews on Tour
+    let filter = {}
+    if (req.params.tourId) filter = { tour: req.params.tourId }
+
+    // execute query
+    const features = new APIFeatures(Model.find(filter), req.query)
+    .filter()
+    .sort()
+    .limit()
+    .paginate()
+
+    // const docs = await features.query.explain()
+    const docs = await features.query
+
+    // send response
+    res.status(200).json({
+        status: 'success',
+        results: docs.length,
+        data: {
+            data: docs,
         },
     })
 })
