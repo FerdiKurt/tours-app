@@ -33,6 +33,8 @@ const reviewSchema = new mongoose.Schema({
     }
 )
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true })
+
 // query middleware: find()
 reviewSchema.pre(/^find/, function (next) {
     const reviewsQuery = this
